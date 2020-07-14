@@ -1,15 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel = "stylesheet" href = "styles.css">
     <script src="./two.js/two.js"></script>
 
     <title>Fourier transform</title>
 </head>
 <body style="background-color: black">
-<div id="draw-animation"></div>
+<div class="topMenu" >
+    <a class="centre" href="index.html" style="text-decoration: none">Home</a>
+    <a class="centre" id="fourier-portrait">Fourier Portrait</a>
+    <a class="centre" id="random-noise">Random Noise</a>
+    <a class="centre" id="pi">PI</a>
+    <a class="centre" id="circle">Circle</a>
+    <a class="centre" id="coding-train">Coding Train</a>
+<!--    <a class="centre" id="fourier-series" href="fourier-series.html">Fourier Series</a>-->
+<!--    <a class="centre" id="fourier-transform" href="fourier-transform.html">Fourier Transform</a>-->
+</div>
+<div id="draw-animation" style="top: 6vw; position:absolute;"></div>
 </body>
 <script src="data.js" defer></script>
 <script src="pi.js" defer></script>
+<script src="fourierPortrait.js" defer></script>
 <script src="fourier-series.js" defer></script>
+
 </html>

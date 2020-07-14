@@ -12,6 +12,8 @@ function bubbleSortSetup(){
 }
 
 function bubbleSortListener(){
+    startButton.hidden = true;
+    resetButton.hidden = true;
     bubbleSortInterval = setInterval(function () {
         if(p <= arry.length){
             if(q <= arry.length){
@@ -29,6 +31,8 @@ function bubbleSortListener(){
             clearInterval(bubbleSortInterval);
             p = 0;
             q = 0;
+            startButton.hidden = true;
+            resetButton.hidden = false;
         }
     },10)
 }

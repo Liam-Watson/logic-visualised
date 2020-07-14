@@ -8,29 +8,31 @@ function mergeSetup() {
     removeAllListeners();
     generateArrayValues();
     sliderContainer.style.display = "block";
+    console.log(arry);
     startButton.addEventListener("click",mergeSortListener);
 }
 
 function halfArrBottom(arr){
-    return arr.slice(0, Math.floor(arr.length/2));
+    return arr.slice(0, Math.ceil(arr.length/2));
 }
 function halfArrTop(arr){
-    return arr.slice(Math.floor(arr.length/2)+1);
+    return arr.slice(Math.ceil(arr.length/2));
 }
 
 
 function mergeSortListener(){
-    console.log(arry);
+    startButton.hidden = true;
+    resetButton.hidden = true;
     let tmp = [arry,halfArrBottom(arry),halfArrTop(arry),
         halfArrBottom(halfArrBottom(arry)),halfArrTop(halfArrBottom(arry)),halfArrBottom(halfArrTop(arry)),halfArrTop(halfArrTop(arry)),
         halfArrBottom(halfArrBottom(halfArrBottom(arry))),halfArrTop(halfArrBottom(halfArrBottom(arry))),halfArrBottom(halfArrTop(halfArrBottom(arry))),halfArrTop(halfArrTop(halfArrBottom(arry))),halfArrBottom(halfArrBottom(halfArrTop(arry))),halfArrTop(halfArrBottom(halfArrTop(arry))),halfArrBottom(halfArrTop(halfArrTop(arry))),halfArrTop(halfArrTop(halfArrTop(arry)))];
     let arrySdin = [...tmp];
     for(let c = 0; c < tmp.length; c++){
         arrySdin[c] = [...tmp[c]];
-        console.log(arrySdin[c]);
         tmp[c] = mergeSort(tmp[c]);
     }
     reallySlowJankyRender(arrySdin, tmp);
+
 }
 
 function mergeSort(arr){
@@ -85,14 +87,15 @@ function merge(lft, rgt){
 }
 
 function reallySlowJankyRender(arrySdin, tmp){
-    console.log(arrySdin);
+    // console.log(arrySdin[0]);
     setTimeout(function () {
         arry = arrySdin[0];
-        console.log(arrySdin[0]);
+        // console.log(arrySdin[0]);
         rerender("#000");
     },0)
     setTimeout(function () {
         arry = tmp[7].concat(arrySdin[8] ,arrySdin[9], arrySdin[10], arrySdin[11], arrySdin[12], arrySdin[13], arrySdin[14]);
+        console.log(arrySdin, tmp)
         rerender("#000");
     },1000)
     setTimeout(function () {
@@ -150,5 +153,7 @@ function reallySlowJankyRender(arrySdin, tmp){
     setTimeout(function () {
         arry = tmp[0];
         rerender("#13e600");
+        startButton.hidden = true;
+        resetButton.hidden = false;
     },15000)
 }

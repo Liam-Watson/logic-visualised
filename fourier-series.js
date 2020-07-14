@@ -1,57 +1,113 @@
 
 
 let elem = document.getElementById('draw-animation');
-let params = {fullscreen:true};//width: 600, height: 600
+let screenWidth = window.screen.width;
+let screenHeight = window.screen.height;
+let params = {width: screenWidth, height: screenHeight};//width: 600, height: 600
 let two = new Two(params).appendTo(elem);
 
 
 let number_of_vectors = 50;
 let X = [];
 let Y = [];
-let skip = 8;
-//Coding Train
-// for (let i = 0; i < drawing.length; i += 20) {
-//     X.push(drawing[i].x);
-//     Y.push(drawing[i].y);
-// }
 
-//random
-// for(let i = 0; i < number_of_vectors; i++){
-//     X.push(Math.random()*300);
-// }
-// for(let i = 0; i < number_of_vectors; i++){
-//     Y.push(Math.random()*300);
-// }
+let status = 0;
+let plotX = [];
 
-//PI
-for (let i = 0; i < pi.length; i += 1) {
-    X.push(pi[i].x);
-    Y.push(pi[i].y);
-}
-
-// let angle;
-// //circle
-// for(let p = 0; p < number_of_vectors; p++){
-//     angle = map_range(p,0,50,0,2*Math.PI)
-//     X.push(50*Math.cos(angle));
-// }
-//
-// for(let p = 0; p < number_of_vectors; p++){
-//     angle = map_range(p,0,50,0,2*Math.PI)
-//     Y.push(50*Math.sin(angle));;
-// }
-
+let t = 0;
+let frameCount = 15;
 let fourierX = discreteFourierTransform(X);
 let fourierY = discreteFourierTransform(Y);
 
 fourierX.sort((a, b) => b.amp - a.amp);
 fourierY.sort((a, b) => b.amp - a.amp);
 
-let plotX = [];
+let dt = (2*Math.PI)/fourierY.length;
 
-let t = 0;
-let frameCount = 30;
-const dt = (2*Math.PI)/fourierY.length;
+function resetVrbls(){
+    t = 0;
+    X = [];
+    Y = [];
+    plotX = [];
+    fourierY = [];
+    fourierX = [];
+}
+function setUp(){
+     fourierX = discreteFourierTransform(X);
+     fourierY = discreteFourierTransform(Y);
+    fourierX.sort((a, b) => b.amp - a.amp);
+    fourierY.sort((a, b) => b.amp - a.amp);
+    dt = (2*Math.PI)/fourierY.length;
+}
+
+const FOURIER_PORTRAIT = document.getElementById("fourier-portrait");
+FOURIER_PORTRAIT.addEventListener("click", function(){
+    status = 1;
+    resetVrbls();
+    //Fourier Portrait
+    for (let i = 0; i < fData.length; i += 1) {
+        X.push(-fData[i].x/3 + 300);
+        Y.push(fData[i].y/3 - 150);
+    }
+    setUp();
+});
+const PI = document.getElementById("pi");
+PI.addEventListener("click", function(){
+    status = 2;
+    resetVrbls();
+    //PI
+    for (let i = 0; i < pi.length; i += 1) {
+        X.push(-1*pi[i].x);
+        Y.push(-1*pi[i].y);
+    }
+    setUp();
+});
+const RANDOM_NOISE = document.getElementById("random-noise");
+RANDOM_NOISE.addEventListener("click", function(){
+    status = 3;
+    resetVrbls();
+    //random
+    for(let i = 0; i < number_of_vectors; i++){
+        X.push(Math.random()*400 - 200);
+    }
+    for(let i = 0; i < number_of_vectors; i++){
+        Y.push(Math.random()*400 - 200);
+    }
+    setUp();
+});
+const CIRCLE = document.getElementById("circle");
+CIRCLE.addEventListener("click", function(){
+    status = 4;
+    let angle;
+    resetVrbls();
+    //circle
+    for(let p = 0; p < number_of_vectors; p++){
+        angle = map_range(p,0,50,0,2*Math.PI)
+        X.push(50*Math.cos(angle));
+    }
+
+    for(let p = 0; p < number_of_vectors; p++){
+        angle = map_range(p,0,50,0,2*Math.PI)
+        Y.push(50*Math.sin(angle));;
+    }
+    setUp();
+});
+const CODING_TRAIN = document.getElementById("coding-train");
+CODING_TRAIN.addEventListener("click", function(){
+    status = 5;
+    resetVrbls();
+    //Coding Train
+    for (let i = 0; i < drawing.length; i += 5) {
+        X.push(drawing[i].x);
+        Y.push(drawing[i].y);
+    }
+    setUp();
+});
+
+
+
+
+
 
 setInterval(function() {
     two.update();
@@ -81,7 +137,7 @@ two.bind('update', function() {
     pointY.command = Two.Commands.curve;
     plotX.unshift(pointY);
 
-    if (plotX.length > 250) {
+    if (plotX.length > 700) {
         plotX.pop();
     }
     let curveX = new Two.Path(plotX, false, false, false);
@@ -95,13 +151,13 @@ two.bind('update', function() {
     if (t > 2 * Math.PI) {
         t = 0;
     }
-// }).play();
+
 });
 
 
 
 function drawCircles(x, y,rot, fourier){
-    for(let i =0; i < fourier.length-1; i++) {
+    for(let i =0; i < number_of_vectors; i++) {
     // for(let i =0; i < 25; i++) {
         let xPrev = x;
         let yPrev = y;

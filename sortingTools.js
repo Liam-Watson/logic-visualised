@@ -4,6 +4,7 @@ let VECTORDIV = document.getElementById("vectorDIV");
 const width = window.screen.width*0.95;
 const height = window.screen.height*0.95;
 const startButton = document.getElementById("startButton");
+const resetButton = document.getElementById("resetButton");
 
 
 let bubbleSortInterval = null;
@@ -65,8 +66,12 @@ function rerender(barColor){
 
 slider.oninput = function() {
     sliderWight = this.value/100.0;
+    resetButton.hidden = true;
     numLines = Math.floor(((width*0.95)*sliderWight)/10);
+    startButton.hidden = false;
     clearInterval(bubbleSortInterval);
+    clearInterval(selectionSortInterval);
+    clearInterval(mergeSortInterval);
     generateArrayValues();
 }
 
@@ -108,4 +113,13 @@ function rerenderArray(barColor, arr){
         svg1.appendChild(line1)
         VECTORDIV.appendChild(svg1);
     }
+}
+resetButton.addEventListener("click", resetArray);
+function resetArray() {
+    console.log("HER");
+    reset();
+    generateArrayValues();
+    rerenderArray("#000");
+    startButton.hidden = false;
+    resetButton.hidden = true;
 }

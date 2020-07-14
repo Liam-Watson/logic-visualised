@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel = "stylesheet" href = "styles.css">
+    <script src = "sortingTools.js" defer></script>
+    <script src = "selectionSort.js" defer></script>
+    <script src = "mergeSort.js" defer></script>
+    <script src = "bubbleSort.js" defer></script>
+    <title>Sorting</title>
+</head>
+<body>
+<div class="topMenu">
+    <a class="centre" href="index.html" style="text-decoration: none">Home</a>
+    <a class="centre" id="mergeSortButton">Merge Sort</a>
+    <a class="centre" id="selectionSortButton">Selection Sort</a>
+    <a class="centre" id="bubbleSortButton">Bubble Sort</a>
+</div>
+<div id="vectorDIV" class = "vectorDIV"></div>
+<div class="slidecontainer"  id = "sliderCont">
+    <input type="range" min="5" max="100" value="50" class="slider" id="myRange">
+    <button type="button" class="startButton" id="startButton">Start</button>
+    <button type="button" class="startButton" id="resetButton" hidden="true">Reset</button>
+</div>
+<script src="pageSetup.js"></script>
+</body>
+</html>

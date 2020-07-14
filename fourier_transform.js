@@ -1,86 +1,108 @@
+let state = 0;
+
+
+
+
 let t = 0;
 let dt = 0.01;
-// let r = 100;
-let x0 = 0;
-let y0 = 0;
 
-
-
+let frameCount = 15;
 
 let plot = [new Two.Anchor(0, 0, Two.Commands.curve)];
-// Make an instance of two and place it on the page.
-let elem = document.getElementById('draw-animation');
-let params = {fullscreen:true};//width: 600, height: 600
-let two = new Two(params).appendTo(elem);
 
-// two has convenience methods to create shapes.
+let elem = document.getElementById('draw-animation');
+let screenWidth = window.screen.width;
+let screenHeight = window.screen.height;
+let params = {width: screenWidth, height: screenHeight-50};
+
+let two = new Two(params).appendTo(elem);
 let xOrigin = two.width/2;
 let yOrigin = two.height/2;
 
+let numberOfVectors = 10;
+let updateInterval = setInterval(function() {
+    two.update();
+}, 1000000);
 
-function makePoint(x, y) {
 
-    if (arguments.length <= 1) {
-        y = x.y;
-        x = x.x;
-    }
+const SAW_TOOTH = document.getElementById("saw-tooth");
+SAW_TOOTH.addEventListener("click", function(){
+    state = 1;
+    plot = [];
+    frameCount = 10;
+    dt = 0.1;
+    clearInterval(updateInterval);
+    updateInterval = setInterval(function() {
+        two.update();
+    }, frameCount);
 
-    var v = new Two.Vector(x, y);
-    v.position = new Two.Vector().copy(v);
+});
+const SQUARE_WAVE = document.getElementById("square-wave");
+SQUARE_WAVE.addEventListener("click", function(){
+    state = 2;
+    plot = [];
+    frameCount = 10;
+    dt = 0.03;
+    clearInterval(updateInterval);
+    updateInterval = setInterval(function() {
+        two.update();
+    }, frameCount);
 
-    return v;
+});
+const SINE_WAVE = document.getElementById("sine-wave");
+SINE_WAVE.addEventListener("click", function(){
+    state = 3;
+    plot = [];
+    dt = 0.03;
+    frameCount = 15;
+    clearInterval(updateInterval);
+    updateInterval = setInterval(function() {
+        two.update();
+    }, frameCount);
+});
+const RANDOM_WAVE = document.getElementById("random-wave");
+RANDOM_WAVE.addEventListener("click", function(){
+    state = 4;
+    dt = 0.1;
+    plot = [];
+    frameCount = 10;
+    clearInterval(updateInterval);
+    updateInterval = setInterval(function() {
+        two.update();
+    }, frameCount);
 
-}
-
-// Don't forget to tell two to render everything
-// to the screen
-two.bind('update', function(frameCount) {
+});
+two.bind('update', function() {
     two.clear();
 
     let x = 0;
     let y = 0;
-    // let circle = two.makeCircle(0, 0, r);
-    // circle.fill = '#000';
-    // circle.stroke = '#FFF'; // Accepts all valid css color
-    // circle.linewidth = 2;
-    // circle.translation.set(200, 400);
-
-    for(let i =0; i < 10; i++) {
-        let n = 2 * i + 1;
-        let xPrev = x;
-        let yPrev = y;
-        let r = 50 * (4 / (n * Math.PI));
-
-        x += r * Math.cos(n*t);
-        y += r * Math.sin(n*t);
-
-
-        let circle2 = two.makeCircle(xOrigin + xPrev, yOrigin + yPrev, r);
-        circle2.noFill();
-        // circle2.fill = '#000';
-        circle2.stroke = '#FFF';
-        circle2.linewidth = 0.3;
-
-
-
-        let line = two.makeLine(xPrev, yPrev,  x,  y);
-        line.stroke = '#FFF';
-        line.linewidth = 1;
-
-
-        line.translation.set(two.width/2, two.height/2);
-
-
+    let V = {x,y};
+    if(state ===0){
+        V = {};
+        plot = [];
+    }else if(state === 1){
+        V = sawTooth();
+    }else if(state=== 2){
+        V = squareWave();
+    }else if(state === 3){
+        V = sineWave();
+    }else if(state === 4){
+        V = randomNoise();
+        // V=parabolic();
     }
+    // console.log(state);
+    x = V.x;
+    y = V.y;
     let point = new Two.Anchor();
     point.x = 0;
     point.y = y;
     point.command = Two.Commands.curve;
     for (let j = 0; j < plot.length; j++) {
-        plot[j].x = plot[j].x + dt * 10;
+        plot[j].x = plot[j].x + dt * 20;
     }
     plot.unshift(point);
-    if (plot.length > 250) {
+    if (plot.length > 300) {
         plot.pop();
     }
 
@@ -97,8 +119,109 @@ two.bind('update', function(frameCount) {
     curve.translation.set((two.width/2)+200, two.height/2);
     two.add(curve);
     t+=dt;
-}).play();
+    if (t > 2 * Math.PI) {
+        t = 0;
+    }
+});
+function sineWave() {
+    let x = 0;
+    let y = 0;
+    let n = 2 * 1 + 1;
+    let xPrev = x;
+    let yPrev = y;
+    let r = 300 * (4 / (n * Math.PI));
 
+     x += r * Math.cos(n*t);
+     y += r * Math.sin(n*t);
+    drawCircle(x,y,xPrev,yPrev,r);
+    let V = {x,y}
+    return V;
+}
+function sawTooth() {
+    let x = 0;
+    let y = 0;
+    for(let i =1; i < numberOfVectors; i++) {
+        let xPrev = x;
+        let yPrev = y;
+
+        let neg = Math.pow(-1,i);
+
+        let r = 100 * (2 / (i* neg * Math.PI));
+
+        x += r * Math.cos(i*t);
+        y += r * Math.sin(i*t);
+
+        drawCircle(x,y,xPrev,yPrev,r);
+
+    }
+    let V = {x,y}
+    return V;
+}
+function randomNoise() {
+    let x = 0;
+    let y = 0;
+    for(let i =0; i < numberOfVectors; i++) {
+        let xPrev = x;
+        let yPrev = y;
+        let r = 100 * (4 / ((i+1) * Math.PI));
+
+        x = Math.random()*150;
+        y = Math.random()*150;
+        drawCircle(x,y,xPrev,yPrev,r);
+
+    }
+    let V = {x,y}
+    return V;
+}
+
+function parabolic() {
+    let x = 0;
+    let y = 0;
+    for(let i =0; i < numberOfVectors; i++) {
+        let n = 2 * i + 1;
+        let xPrev = x;
+        let yPrev = y;
+        let r = 80 * (4 / (n * Math.PI));
+        x -= r * Math.sin(n*t);
+        y += -r * Math.cos(n*t);
+
+        drawCircle(x,y,xPrev,yPrev,r);
+
+    }
+    y+= (Math.PI * Math.PI)/3;
+    let V = {x,y}
+    return V;
+}
+function squareWave() {
+    let x = 0;
+    let y = 0;
+    for(let i =0; i < numberOfVectors; i++) {
+        let n = 2 * i + 1;
+        let xPrev = x;
+        let yPrev = y;
+        let r = 80 * (4 / (n * Math.PI));
+
+        x += r * Math.cos(n*t);
+        y += r * Math.sin(n*t);
+
+        drawCircle(x,y,xPrev,yPrev,r);
+
+    }
+    let V = {x,y}
+    return V;
+}
+
+
+function drawCircle(x,y,xPrev,yPrev,r){
+    let circle2 = two.makeCircle(xOrigin + xPrev, yOrigin + yPrev, r);
+    circle2.noFill();
+    circle2.stroke = '#FFF';
+    circle2.linewidth = 0.3;
+    let line = two.makeLine(xPrev, yPrev,  x,  y);
+    line.stroke = '#FFF';
+    line.linewidth = 1;
+    line.translation.set(two.width/2, two.height/2);
+}
 
 
 

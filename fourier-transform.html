@@ -1,13 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel = "stylesheet" href = "styles.css">
     <script src="./two.js/two.js"></script>
-
     <title>Fourier transform</title>
 </head>
 <body style="background-color: black">
-<div id="draw-animation"></div>
+<div class="topMenu" >
+    <a class="centre" href="index.html" style="text-decoration: none">Home</a>
+<!--    <a class="centre" id="fourier-transform" href="fourier-transform.html" style="text-decoration: none">Fourier Transform</a>-->
+<!--    <a class="centre" id="fourier-series" href="fourier-series.html" style="text-decoration: none">Fourier Series</a>-->
+    <a class="centre" id="saw-tooth">Saw Tooth</a>
+    <a class="centre" id="random-wave">Random Noise</a>
+    <a class="centre" id="square-wave">Square Wave</a>
+    <a class="centre" id="sine-wave">Pure sine Wave</a>
+</div>
+<div id="draw-animation" style="top: 6vw; position:absolute;"></div>
 </body>
 <script src="fourier_transform.js" defer></script>
 </html>

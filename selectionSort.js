@@ -9,9 +9,12 @@ selectionSort.addEventListener("click", function () {
     generateArrayValues();
     sliderContainer.style.display = "block";
     startButton.addEventListener("click",selectionSortListener);
+    resetButton.hidden = true;
 });
 
 function selectionSortListener(){
+    startButton.hidden = true;
+    resetButton.hidden = true;
     selectionSortInterval = setInterval(function () {
         if(p <= arry.length){
             if(q <= arry.length){
@@ -29,6 +32,8 @@ function selectionSortListener(){
             clearInterval(selectionSortInterval);
             p = 0;
             q = 0;
+            startButton.hidden = true;
+            resetButton.hidden = false;
         }
     },10)
 }
