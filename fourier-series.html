@@ -18,6 +18,14 @@
 <!--    <a class="centre" id="fourier-series" href="fourier-series.html">Fourier Series</a>-->
 <!--    <a class="centre" id="fourier-transform" href="fourier-transform.html">Fourier Transform</a>-->
 </div>
+<div class="slidecontainer"  id = "sliderCont" style="position: absolute;z-index: 2; left: 60%">
+<!--    <h1 style="color: white; padding-right: 1vw;">Pause:</h1>-->
+    <button id="dtPauseS" class="slider" style="width: 12%; margin-top: 3vw">Pause/Play</button>
+    <h1 style="color: white;  padding-right: 1vw;">Number of Vectors:</h1>
+    <input type="range" min="1" max="200" value="50" class="slider" id="vectorsSliderS" style=" width: 30%">
+    <h1 style="color: white;  padding-right: 1vw;">Frame Rate:</h1>
+    <input type="range" min="1" max="1000" value="30" class="slider" id="frameRateSliderS" style=" width: 30%; ">
+</div>
 <div id="draw-animation" style="top: 6vw; position:absolute;"></div>
 </body>
 <script src="data.js" defer></script>

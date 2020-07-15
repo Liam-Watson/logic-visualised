@@ -6,6 +6,9 @@ let screenHeight = window.screen.height;
 let params = {width: screenWidth, height: screenHeight};//width: 600, height: 600
 let two = new Two(params).appendTo(elem);
 
+let vectorSliderS = document.getElementById("vectorsSliderS");
+let pauseButtonS= document.getElementById("dtPauseS");
+let frameRateSliderS = document.getElementById("frameRateSliderS");
 
 let number_of_vectors = 50;
 let X = [];
@@ -23,7 +26,28 @@ fourierX.sort((a, b) => b.amp - a.amp);
 fourierY.sort((a, b) => b.amp - a.amp);
 
 let dt = (2*Math.PI)/fourierY.length;
+vectorSliderS.max = fourierX.length;
+vectorSliderS.oninput = function(){
+    number_of_vectors = this.value;
+}
 
+pauseButtonS.onclick = function(){
+    if(dt === 0){
+        dt = (2*Math.PI)/fourierY.length;;
+    }else{
+        dt = 0;
+    }
+}
+let updateInterval = setInterval(function() {
+    two.update();
+}, 1000000);
+frameRateSliderS.oninput = function(){
+    frameCount = 1/(this.value/1000);
+    clearInterval(updateInterval);
+    updateInterval = setInterval(function() {
+        two.update();
+    }, frameCount);
+}
 function resetVrbls(){
     t = 0;
     X = [];
@@ -31,13 +55,19 @@ function resetVrbls(){
     plotX = [];
     fourierY = [];
     fourierX = [];
+
 }
 function setUp(){
-     fourierX = discreteFourierTransform(X);
-     fourierY = discreteFourierTransform(Y);
+    fourierX = discreteFourierTransform(X);
+    fourierY = discreteFourierTransform(Y);
     fourierX.sort((a, b) => b.amp - a.amp);
     fourierY.sort((a, b) => b.amp - a.amp);
     dt = (2*Math.PI)/fourierY.length;
+    vectorSliderS.max = fourierX.length;
+    clearInterval(updateInterval);
+    updateInterval = setInterval(function() {
+        two.update();
+    }, frameCount);
 }
 
 const FOURIER_PORTRAIT = document.getElementById("fourier-portrait");
@@ -46,8 +76,8 @@ FOURIER_PORTRAIT.addEventListener("click", function(){
     resetVrbls();
     //Fourier Portrait
     for (let i = 0; i < fData.length; i += 1) {
-        X.push(-fData[i].x/3 + 300);
-        Y.push(fData[i].y/3 - 150);
+        X.push(-fData[i].x/2.5 + window.screen.width/3.5);
+        Y.push(fData[i].y/2.5 - window.screen.height/3);
     }
     setUp();
 });
@@ -97,21 +127,16 @@ CODING_TRAIN.addEventListener("click", function(){
     status = 5;
     resetVrbls();
     //Coding Train
-    for (let i = 0; i < drawing.length; i += 5) {
+    for (let i = 0; i < drawing.length; i += 10) {
         X.push(drawing[i].x);
         Y.push(drawing[i].y);
     }
     setUp();
 });
 
-
-
-
-
-
-setInterval(function() {
-    two.update();
-}, frameCount);
+// setInterval(function() {
+//     two.update();
+// }, frameCount);
 two.bind('update', function() {
     two.clear();
 
@@ -135,9 +160,12 @@ two.bind('update', function() {
     pointY.x = VX.x;
     pointY.y = VY.y;
     pointY.command = Two.Commands.curve;
-    plotX.unshift(pointY);
 
-    if (plotX.length > 700) {
+    if(dt != 0){
+        plotX.unshift(pointY);
+    }
+
+    if (plotX.length > fourierX.length+1 && dt != 0) {
         plotX.pop();
     }
     let curveX = new Two.Path(plotX, false, false, false);
@@ -158,7 +186,6 @@ two.bind('update', function() {
 
 function drawCircles(x, y,rot, fourier){
     for(let i =0; i < number_of_vectors; i++) {
-    // for(let i =0; i < 25; i++) {
         let xPrev = x;
         let yPrev = y;
 

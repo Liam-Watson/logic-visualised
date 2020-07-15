@@ -12,11 +12,24 @@
 <!--    <a class="centre" id="fourier-transform" href="fourier-transform.html" style="text-decoration: none">Fourier Transform</a>-->
 <!--    <a class="centre" id="fourier-series" href="fourier-series.html" style="text-decoration: none">Fourier Series</a>-->
     <a class="centre" id="saw-tooth">Saw Tooth</a>
-    <a class="centre" id="random-wave">Random Noise</a>
+    <a class="centre" id="triangle-wave">Triangle Wave</a>
+<!--    <a class="centre" id="random-wave">Random Noise</a>-->
+    <a class="centre" id="random-wave">Parabolic Wave</a>
     <a class="centre" id="square-wave">Square Wave</a>
     <a class="centre" id="sine-wave">Pure sine Wave</a>
+
 </div>
-<div id="draw-animation" style="top: 6vw; position:absolute;"></div>
+<div class="slidecontainer"  id = "sliderCont" style="position: absolute; z-index: 1000">
+    <span>
+        <h1 style="color: white; padding-right: 1vw;">dt:</h1>
+        <input type="range" min="0" max="10" value="5" class="slider" id="dtSlider" style=" width: 30%">
+    </span>
+    <h1 style="color: white;  padding-right: 1vw;">Number of Vectors:</h1>
+    <input type="range" min="1" max="200" value="25" class="slider" id="vectorsSlider" style=" width: 30%">
+    <h1 style="color: white;  padding-right: 1vw;">Frame Rate:</h1>
+    <input type="range" min="1" max="300" value="30" class="slider" id="frameRateSlider" style=" width: 30%; ">
+</div>
+<div id="draw-animation" style="top: 6vw; position:absolute; z-index: 0"></div>
 </body>
 <script src="fourier_transform.js" defer></script>
 </html>

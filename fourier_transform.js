@@ -1,5 +1,8 @@
 let state = 0;
 
+let vectorSlider = document.getElementById("vectorsSlider");
+let dtSlider = document.getElementById("dtSlider");
+let frameRateSlider = document.getElementById("frameRateSlider");
 
 
 
@@ -20,6 +23,19 @@ let xOrigin = two.width/2;
 let yOrigin = two.height/2;
 
 let numberOfVectors = 10;
+vectorSlider.oninput = function(){
+    numberOfVectors = this.value;
+}
+dtSlider.oninput = function(){
+    dt = this.value/100;
+}
+frameRateSlider.oninput = function(){
+    frameCount = 1/(this.value/1000);
+    clearInterval(updateInterval);
+    updateInterval = setInterval(function() {
+        two.update();
+    }, frameCount);
+}
 let updateInterval = setInterval(function() {
     two.update();
 }, 1000000);
@@ -72,6 +88,18 @@ RANDOM_WAVE.addEventListener("click", function(){
     }, frameCount);
 
 });
+const TRIANGLE_WAVE = document.getElementById("triangle-wave");
+TRIANGLE_WAVE.addEventListener("click", function(){
+    state = 5;
+    dt = 0.03;
+    plot = [];
+    frameCount = 10;
+    clearInterval(updateInterval);
+    updateInterval = setInterval(function() {
+        two.update();
+    }, frameCount);
+
+});
 two.bind('update', function() {
     two.clear();
 
@@ -88,10 +116,11 @@ two.bind('update', function() {
     }else if(state === 3){
         V = sineWave();
     }else if(state === 4){
-        V = randomNoise();
-        // V=parabolic();
+        // V = randomNoise();
+        V=parabolic();
+    }else if(state === 5){
+        V = triangleWave();
     }
-    // console.log(state);
     x = V.x;
     y = V.y;
     let point = new Two.Anchor();
@@ -101,8 +130,10 @@ two.bind('update', function() {
     for (let j = 0; j < plot.length; j++) {
         plot[j].x = plot[j].x + dt * 20;
     }
-    plot.unshift(point);
-    if (plot.length > 300) {
+    if(dt != 0){
+        plot.unshift(point);
+    }
+    if (plot.length > 300 && dt != 0.00) {
         plot.pop();
     }
 
@@ -119,9 +150,15 @@ two.bind('update', function() {
     curve.translation.set((two.width/2)+200, two.height/2);
     two.add(curve);
     t+=dt;
+    // if (t > 2 * Math.PI && state != 3) {
+    //     t = 0;
+    // }
     if (t > 2 * Math.PI) {
         t = 0;
     }
+    // if(t > Math.PI && state === 3){
+    //     t = -Math.PI;
+    // }
 });
 function sineWave() {
     let x = 0;
@@ -140,7 +177,7 @@ function sineWave() {
 function sawTooth() {
     let x = 0;
     let y = 0;
-    for(let i =1; i < numberOfVectors; i++) {
+    for(let i =1; i < numberOfVectors+1; i++) {
         let xPrev = x;
         let yPrev = y;
 
@@ -160,13 +197,13 @@ function sawTooth() {
 function randomNoise() {
     let x = 0;
     let y = 0;
-    for(let i =0; i < numberOfVectors; i++) {
+    for(let i =1; i < numberOfVectors; i++) {
         let xPrev = x;
         let yPrev = y;
-        let r = 100 * (4 / ((i+1) * Math.PI));
+        let r = Math.random()*100 * (4 / ((i+1) * Math.PI));
 
-        x = Math.random()*150;
-        y = Math.random()*150;
+        x += r * Math.cos(i*t);
+        y += r * Math.sin(i*t);
         drawCircle(x,y,xPrev,yPrev,r);
 
     }
@@ -177,13 +214,13 @@ function randomNoise() {
 function parabolic() {
     let x = 0;
     let y = 0;
-    for(let i =0; i < numberOfVectors; i++) {
-        let n = 2 * i + 1;
+    for(let i =1; i < numberOfVectors; i++) {
+        let n = i;
         let xPrev = x;
         let yPrev = y;
-        let r = 80 * (4 / (n * Math.PI));
-        x -= r * Math.sin(n*t);
-        y += -r * Math.cos(n*t);
+        let r = Math.pow(-1,i)*30 * (4 / (n*n));
+        x += r * Math.sin(n*t);
+        y -= r * Math.cos(n*t);
 
         drawCircle(x,y,xPrev,yPrev,r);
 
@@ -211,6 +248,26 @@ function squareWave() {
     return V;
 }
 
+function triangleWave() {
+    let x = 0;
+    let y = 0;
+    let l = Math.PI;
+    for(let i =0; i < numberOfVectors; i++) {
+        let n = 2 * i + 1;
+        let xPrev = x;
+        let yPrev = y;
+        let r =  (8 / (Math.PI*Math.PI))*100*Math.pow(-1,((n-1)/2))/ (Math.pow(n,2));
+
+        x += r * Math.cos((n*Math.PI*t)/l);
+        y += r * Math.sin((n*Math.PI*t)/l);
+
+        drawCircle(x,y,xPrev,yPrev,r);
+
+    }
+    // y = y;
+    let V = {x,y}
+    return V;
+}
 
 function drawCircle(x,y,xPrev,yPrev,r){
     let circle2 = two.makeCircle(xOrigin + xPrev, yOrigin + yPrev, r);
