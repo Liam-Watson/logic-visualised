@@ -97,6 +97,7 @@ RANDOM_NOISE.addEventListener("click", function(){
     status = 3;
     resetVrbls();
     //random
+
     for(let i = 0; i < number_of_vectors; i++){
         X.push(Math.random()*400 - 200);
     }
@@ -111,6 +112,7 @@ CIRCLE.addEventListener("click", function(){
     let angle;
     resetVrbls();
     //circle
+    number_of_vectors = 50;
     for(let p = 0; p < number_of_vectors; p++){
         angle = map_range(p,0,50,0,2*Math.PI)
         X.push(50*Math.cos(angle));
