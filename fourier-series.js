@@ -75,6 +75,7 @@ FOURIER_PORTRAIT.addEventListener("click", function(){
     status = 1;
     resetVrbls();
     //Fourier Portrait
+    number_of_vectors = 50;
     for (let i = 0; i < fData.length; i += 1) {
         X.push(-fData[i].x/2.5 + window.screen.width/3.5);
         Y.push(fData[i].y/2.5 - window.screen.height/3);
@@ -86,6 +87,7 @@ PI.addEventListener("click", function(){
     status = 2;
     resetVrbls();
     //PI
+    number_of_vectors = 50;
     for (let i = 0; i < pi.length; i += 1) {
         X.push(-1*pi[i].x);
         Y.push(-1*pi[i].y);
@@ -97,7 +99,7 @@ RANDOM_NOISE.addEventListener("click", function(){
     status = 3;
     resetVrbls();
     //random
-
+    number_of_vectors = 50;
     for(let i = 0; i < number_of_vectors; i++){
         X.push(Math.random()*400 - 200);
     }
