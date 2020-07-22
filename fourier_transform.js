@@ -177,7 +177,7 @@ function sineWave() {
 function sawTooth() {
     let x = 0;
     let y = 0;
-    for(let i =1; i < numberOfVectors+1; i++) {
+    for(let i =1; i < numberOfVectors; i++) {
         let xPrev = x;
         let yPrev = y;
 
